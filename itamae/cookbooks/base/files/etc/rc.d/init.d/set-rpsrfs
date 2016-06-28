@@ -1,0 +1,108 @@
+#!/bin/bash
+# chkconfig: 345 98 20
+# description: Set RPS/RFS network tunings
+# processname: set-rpsrfs
+
+. /etc/init.d/functions
+
+start() {
+  LO_RPS_FLOW_CNT="32768"
+  ETH_RPS_FLOW_CNT="4096"
+
+  PROCESSOR_COUNT=$(cat /proc/cpuinfo | grep -c ^processor)
+  CPUS=0
+
+  if [ ${PROCESSOR_COUNT:?} -eq 1 ]
+  then
+    echo "RPS/RFS disabled because of single cpu."
+    exit 0
+  elif [ ${PROCESSOR_COUNT:?} -eq 2 ]
+  then
+    ## 11(bit) = 3(0x3)
+    CPUS="3"
+  elif [ ${PROCESSOR_COUNT:?} -eq 4 ]
+  then
+    ## 1111(bit) = 4(0x4)
+    CPUS="f"
+  elif [ ${PROCESSOR_COUNT:?} -eq 8 ]
+  then
+    ## 11111111(bit) = 8(0x8)
+    CPUS="ff"
+  elif [ ${PROCESSOR_COUNT:?} -eq 16 ]
+  then
+    ## 1111111111111111(bit) = 16(0x10)
+    CPUS="ffff"
+  elif [ ${PROCESSOR_COUNT:?} -eq 32 ]
+  then
+    ## 11111111111111111111111111111111(bit) = 32(0x20)
+    CPUS="ffffffff"
+  else
+    exit 0
+  fi
+
+  ## RPS
+  FILES=$(ls /sys/class/net/*/queues/rx-*/rps_cpus)
+  for FILE in ${FILES}
+  do
+    echo "${CPUS:?}" > "${FILE:?}"
+  done
+
+  ## XPS
+  FILES=$(ls /sys/class/net/*/queues/tx-*/xps_cpus)
+  for FILE in ${FILES}
+  do
+    echo "${CPUS:?}" > "${FILE:?}"
+  done
+
+  ## RFS
+  FILES=$(ls /sys/class/net/eth*/queues/rx-*/rps_flow_cnt)
+  echo "${LO_RPS_FLOW_CNT:?}" > /sys/class/net/lo/queues/rx-0/rps_flow_cnt
+  for FILE in ${FILES}
+  do
+    echo "${ETH_RPS_FLOW_CNT:?}" > "${FILE:?}"
+  done
+}
+
+stop() {
+  echo "Nothing to do!"
+}
+
+status() {
+  FILES=$(ls /sys/class/net/*/queues/rx-*/rps_cpus)
+  for FILE in ${FILES}
+  do
+    echo -n "${FILE:?} = "
+    cat $FILE
+  done
+
+  FILES=$(ls /sys/class/net/*/queues/tx-*/xps_cpus)
+  for FILE in ${FILES}
+  do
+    echo -n "${FILE:?} = "
+    cat $FILE
+  done
+
+  FILES=$(ls /sys/class/net/eth*/queues/rx-*/rps_flow_cnt)
+  for FILE in ${FILES}
+  do
+    echo -n "${FILE:?} = "
+    cat $FILE
+  done
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  *)
+    echo "Usage: set-rpsrfs {start|stop|status}"
+    exit 1
+    ;;
+esac
+exit $?

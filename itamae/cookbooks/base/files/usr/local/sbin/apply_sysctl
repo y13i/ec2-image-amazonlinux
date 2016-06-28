@@ -1,0 +1,6 @@
+#! /bin/bash
+
+# Source function library.
+. /etc/init.d/functions
+
+apply_sysctl

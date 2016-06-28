@@ -1,0 +1,33 @@
+{
+  "builders": [
+    {
+      "type":          "amazon-ebs",
+      "region":        "us-west-2",
+      "source_ami":    "ami-f303fb93",
+      "instance_type": "t2.small",
+      "ami_name":      "amazonlinux_{{timestamp}}",
+      "ssh_username":  "ec2-user"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type":        "file",
+      "source":      "itamae",
+      "destination": "/home/ec2-user/itamae"
+    },
+
+    {
+      "type": "shell",
+
+      "inline": [
+        "sudo yum -y install gcc ruby23 ruby23-devel",
+        "sudo alternatives --set ruby /usr/bin/ruby2.3",
+        "sudo gem install bundler",
+        "cd /home/ec2-user/itamae && bundle install --path vendor/bundle",
+        "cd /home/ec2-user/itamae && bundle exec itamae local default.rb",
+        "rm -rf /home/ec2-user/itamae"
+      ]
+    }
+  ]
+}

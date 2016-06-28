@@ -1,0 +1,3 @@
+sudo:
+  require_tty: false
+  allow_wheel: true

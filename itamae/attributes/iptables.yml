@@ -1,0 +1,4 @@
+iptables:
+  enabled: false
+ip6tables:
+  enabled: false
