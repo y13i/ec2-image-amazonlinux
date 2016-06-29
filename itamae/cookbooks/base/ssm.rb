@@ -1,4 +1,4 @@
-package "https://amazon-ssm-#{ENV["AWS_REGION"]}.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm" do
+package "https://amazon-ssm-#{node.region}.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm" do
   action :install
   user   "root"
 end

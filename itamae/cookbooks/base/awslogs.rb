@@ -1,10 +1,12 @@
+require "net/http"
+
 package "awslogs" do
   action :install
   user   "root"
 end
 
 service "awslogs" do
-  action [:enable, :start]
+  action :enable
   user   "root"
 end
 
@@ -18,6 +20,6 @@ template "/etc/awslogs/awscli.conf" do
   notifies :restart, "service[awslogs]"
 
   variables(
-    region: ENV["AWS_REGION"]
+    region: node.region,
   )
 end
