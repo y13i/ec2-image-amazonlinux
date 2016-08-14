@@ -21,7 +21,7 @@
       "type": "shell",
 
       "inline": [
-        "sudo yum -y install gcc ruby23 ruby23-devel",
+        "sudo yum -y install gcc ruby23 ruby23-devel git",
         "sudo alternatives --set ruby /usr/bin/ruby2.3",
         "sudo gem install bundler",
         "cd /home/ec2-user/itamae && bundle install --path vendor/bundle",

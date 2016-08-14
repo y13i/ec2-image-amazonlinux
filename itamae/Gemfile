@@ -1,5 +1,5 @@
 source "https://rubygems.org"
 
-gem "itamae", "1.9.4"
+gem "itamae", git: "https://github.com/y13i/itamae.git", branch: "fix-file-permission-error"
 gem "json"
 gem "io-console"
