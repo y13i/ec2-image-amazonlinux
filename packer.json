@@ -1,9 +1,14 @@
 {
+  "variables": {
+    "source_ami": "{{env `SOURCE_AMI`}}",
+    "region":     "{{env `AWS_REGION`}}"
+  },
+
   "builders": [
     {
       "type":          "amazon-ebs",
-      "region":        "us-west-2",
-      "source_ami":    "ami-f303fb93",
+      "region":        "{{user `region`}}",
+      "source_ami":    "{{user `source_ami`}}",
       "instance_type": "t2.small",
       "ami_name":      "amazonlinux_{{timestamp}}",
       "ssh_username":  "ec2-user"
