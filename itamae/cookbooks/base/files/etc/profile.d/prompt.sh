@@ -1,7 +1,7 @@
 if [ "$USER" = "root" ]; then
   pr="#"
 else
-  pr="$"
+  pr="\$"
 fi
 
 if [ -n "$TAGGED_NAME" ]; then
