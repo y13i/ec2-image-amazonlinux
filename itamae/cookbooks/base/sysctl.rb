@@ -4,7 +4,7 @@ file "/etc/sysctl.d/01-tunings.conf" do
   owner    "root"
   group    "root"
   mode     "0644"
-  content  node.sysctl.parameters.map {|k, v| "#{k} = #{v.inspect}\n"}.join
+  content  node.sysctl.parameters.map {|k, v| "#{k} = #{v}\n"}.join
   notifies :run, "execute[/usr/local/sbin/apply_sysctl; true]"
 end
 

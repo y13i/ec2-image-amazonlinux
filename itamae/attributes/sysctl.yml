@@ -6,7 +6,6 @@ sysctl:
     kernel.msgmax: 65536
     kernel.shmmax: 68719476736
     kernel.shmall: 4294967296
-    fs.file-max: 6815744
     fs.aio-max-nr: 1048576
     net.core.rmem_default: 262144
     net.core.wmem_default: 262144
